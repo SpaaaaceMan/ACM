@@ -3,10 +3,10 @@ package GraphModel;
 import java.util.ArrayList;
 
 public class Vertice {
-	
+
 	private String name;
 	private ArrayList<Edge> edges;
-	
+
 	public Vertice(String name)	{
 		this.name = name;
 		this.edges = new ArrayList<Edge>();
@@ -22,7 +22,7 @@ public class Vertice {
 
 	@Override
 	public String toString() {
-		return "Vertice [name=" + name + "]";
+		return name;
 	}
 
 	public ArrayList<Edge> getEdges() {

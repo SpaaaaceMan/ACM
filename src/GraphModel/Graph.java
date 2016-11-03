@@ -8,7 +8,7 @@ public class Graph {
 	private ArrayList<Vertice> vertices;
 	private ArrayList<Edge> edges;
 	private boolean isWeighted;
-	
+
 	public Graph(String name, boolean isWeighted) {
 		super();
 		this.name = name;
@@ -16,12 +16,12 @@ public class Graph {
 		this.edges = new ArrayList<Edge>();
 		this.isWeighted = isWeighted;
 	}
-	
+
 	public void addVertice(Vertice v) {
 		if (vertices.contains(v)) return;
 		vertices.add(v);
 	}
-	
+
 	public void addEdge(Edge e) {
 		if (edges.contains(e)) return;
 		if (!vertices.contains(e.getVertice1())) {
@@ -32,12 +32,17 @@ public class Graph {
 		}
 		edges.add(e);
 	}
-	
+
 	public void addEdge(Vertice v1, Vertice v2) {
 		Edge e = new Edge("a" + edges.size(), v1, v2);
 		addEdge(e);
 	}
-	
+
+	public void addEdge(Vertice v1, Vertice v2, int value) {
+		Edge e = new Edge("a" + edges.size(), v1, v2, value);
+		addEdge(e);
+	}
+
 	public Vertice getVertice(String name) {
 		for (Vertice v : vertices) {
 			if (v.getName() == name) {
@@ -46,7 +51,7 @@ public class Graph {
 		}
 		return null;
 	}
-	
+
 	public Edge getEdge(String name) {
 		for (Edge e : edges) {
 			if (e.getName() == name) {
@@ -82,8 +87,8 @@ public class Graph {
 
 	@Override
 	public String toString() {
-		return "Graph [name=" + name + ", vertices=" + vertices + ", edges="
-				+ edges + "]";
+		return name + " : " + vertices.size() + " vertices & " + edges.size() 
+				+ " edges.\n" + vertices + edges;
 	}
 
 	public boolean isWeighted() {
@@ -93,5 +98,5 @@ public class Graph {
 	public void setWeighted(boolean isWeighted) {
 		this.isWeighted = isWeighted;
 	}
-	
+
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import GraphModel.Edge;
 import GraphModel.Graph;
-import GraphModel.Vertice;
 
 public class StrategyPrim extends AbstractAlgo {
 
@@ -15,40 +14,48 @@ public class StrategyPrim extends AbstractAlgo {
 		while (acm.getVertices().size() < nbVertices) {
 			acm.addEdge(findMinimalEdge());
 		}
+		System.out.println("weight = " + finalWeight);
 		return acm;
 	}
-	
+
+	public boolean isAGoodEdge(Edge e) {
+		if (!acm.getVertices().contains(e.getVertice1()) 
+				&& !acm.getVertices().contains(e.getVertice2()))
+			return false;
+		else if (acm.getVertices().contains(e.getVertice1()) 
+				&& acm.getVertices().contains(e.getVertice2()))
+			return false;
+		return true;
+	}
+
 	public Edge findMinimalEdge() {
+		//liste des arêtes liées à au moins un sommet de l'ACM actuel mais pas 
+		//déjà dedans
 		ArrayList<Edge> edgesFound = new ArrayList<Edge>();
-		
-		//pour chaque arête du graphe d'origine
-		for (int i = 0; i < mainGraph.getEdges().size(); i++) {
-			Edge currEdge = mainGraph.getEdges().get(i);
-			for (int j = 0; j < acm.getVertices().size(); j++) {
-				Vertice currVer = acm.getVertices().get(j);
-				for (int k = 0; k < currVer.getEdges().size(); k++) {
-					Edge cmpEdge = currVer.getEdges().get(k);
-					if (cmpEdge == currEdge) {
-						edgesFound.add(currEdge);
-					}
-				}
-			}
+
+		//pour chaque sommet de l'ACM
+		for (Edge e : edgesNotInACM) {
+			if (isAGoodEdge(e))
+				edgesFound.add(e);
 		}	
-		int values[] = new int [edgesFound.size()];
-		for (int i = 0; i < values.length; i++) {
-			values[i] = edgesFound.get(i).getValue();
-		}
-		int min = getMin(values);
-		for (int i = 0; i < edgesFound.size(); i++) {
-			if (edgesFound.get(i).getValue() == min) {
-				return edgesFound.get(i);
+		Edge res = null;
+		int min = getMin(edgesFound);
+		finalWeight += min;
+		for (Edge e : edgesFound) {
+			if (e.getValue() == min) {
+				res = e;
+				edgesNotInACM.remove(res);
+				return res;
 			}
 		}		
-		return null;
+		return res;
 	}
-	
+
 	public String getNameAlgo() {
 		return "Prim";
 	}
 
+	public void initACM() {
+		acm.addVertice(mainGraph.getVertices().get(0));		
+	}
 }

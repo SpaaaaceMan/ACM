@@ -1,13 +1,13 @@
 package GraphModel;
 
 public class Edge {
-	
+
 	private String name;
 	private int value;
-	
+
 	private Vertice vertice1;
 	private Vertice vertice2;
-	
+
 	public Edge(String name, Vertice vertice1, Vertice vertice2, int value) {
 		this.name = name;
 		this.value = value;
@@ -16,7 +16,7 @@ public class Edge {
 		vertice1.getEdges().add(this);
 		vertice2.getEdges().add(this);
 	}
-	
+
 	public Edge(String name, Vertice vertice1, Vertice vertice2) {
 		super();
 		this.name = name;
@@ -61,7 +61,7 @@ public class Edge {
 
 	@Override
 	public String toString() {
-		return "Edge [name=" + name + ", value=" + value + ", vertice1="
-				+ vertice1 + ", vertice2=" + vertice2 + "]";
+		return "\nEdge " + name + ", value = " + value + ", vertice1 = "
+				+ vertice1 + ", vertice2 = " + vertice2;
 	}
 }
