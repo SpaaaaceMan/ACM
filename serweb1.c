@@ -59,7 +59,7 @@ int chercher_fin_entete(Slot *o, int debut)
 {
     int i = debut;
     int res = -1;
-    for (; o->req[i] = '\0'; ++i) {
+    for (; o->req[i] == '\0'; ++i) {
         if ((o->req[i] == '\n' && o->req[i+1] == '\n') ||
                 (o->req[i] == '\r' && o->req[i+1] == '\n' && o->req[i+2] == '\r' && o->req[i+3] == '\n')) {
             res = i;
@@ -94,8 +94,8 @@ typedef struct _Infos_entete {
 char *get_http_error_message(Code_reponse code)
 {
     char *message; 
-   switch (code) 
-   {
+    switch (code) 
+    {
         case C_OK :
             message = "OK";
             break;
@@ -108,8 +108,8 @@ char *get_http_error_message(Code_reponse code)
         case C_METHOD_UNKNOWN :
             message = "Method unknown";
             break;
-   }
-   return message;
+    }
+    return message;
 }
 
 Id_methode get_id_methode(char *methode)
@@ -127,27 +127,42 @@ void analyser_requete(Slot *o, Infos_entete *ie)
 {
     (void) o;
     ie->code_rep = C_NOT_FOUND;
+    int i = 0;
+    for (i = 0; o->req[i] != ' '; i++) {
+        ie->methode[i] = o->req[i];
+    }
+    int j = i;
+    for (; o->req[i] != ' '; i++) {
+        ie->url[i - j] = o->req[i];
+    }
+    int k = 0;
+    for (; ie->url[k] != '?'; k++) {
+        ie->chemin[k] = o->req[k];
+    }
+    j = i;
+    for (; o->req[i] != ' '; i++) {
+        ie->version[i - j] = o->req[i];
+    }
+    ie->id_meth = get_id_methode(ie->methode);
 }
 
 void preparer_reponse(Slot *o, Infos_entete *ie)
 {
     if (ie->code_rep == C_NOT_FOUND)
-		sprintf(o->rep, "HTTP/1.1 404 Not Found\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
-				"\n""<html><head>\n""<title>Not Found</titles>\n""</head><body>\n""<h1>File not found</h1>\n"
-				"</body></html>\n");
-	else if (ie->code_rep == C_BAD_REQUEST)
-		sprintf(o->rep, "HTTP/1.1 400 Bad Request\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
-				"\n""<html><head>\n""<title>Bad Request</titles>\n""</head><body>\n""<h1>Bad Request</h1>\n"
-				"</body></html>\n");
-	else if (ie->code_rep == C_METHOD_UNKNOWN)
-		sprintf(o->rep, "HTTP/1.1 501 Method Unknown\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
-				"\n""<html><head>\n""<title>Method Unknown</titles>\n""</head><body>\n""<h1>Method Unknown</h1>\n"
-				"</body></html>\n");
-	else if (ie->code_rep == C_OK)
-		sprintf(o->rep, "HTTP/1.1 200 OK\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
-				"\n""<html><head>\n""<title>Welcome</titles>\n""</head><body>\n""<h1>IT WORKS</h1><br/><h3>My time machine works \o/</h3><br/><h1>*BOOM*</h1><br/><h1>I AM A STEAKOSAURUS</h1>\n"
-				"</body></html>\n"
-
+        sprintf(o->rep, "HTTP/1.1 404 Not Found\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
+                "\n""<html><head>\n""<title>Not Found</titles>\n""</head><body>\n""<h1>File not found</h1>\n"
+                "</body></html>\n");
+    else if (ie->code_rep == C_BAD_REQUEST)
+        sprintf(o->rep, "HTTP/1.1 400 Bad Request\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
+                "\n""<html><head>\n""<title>Bad Request</titles>\n""</head><body>\n""<h1>Bad Request</h1>\n"
+                "</body></html>\n");
+    else if (ie->code_rep == C_METHOD_UNKNOWN)
+        sprintf(o->rep, "HTTP/1.1 501 Method Unknown\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
+                "\n""<html><head>\n""<title>Method Unknown</titles>\n""</head><body>\n""<h1>Method Unknown</h1>\n"
+                "</body></html>\n");
+    else if (ie->code_rep == C_OK)
+        sprintf(o->rep, "HTTP/1.1 200 OK\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
+                "\n""<html><head>\n""<title>Welcome</titles>\n""</head><body>\n""<h1>IT WORKS</h1><br/><h3>My time machine works \\o/</h3><br/><h1>*BOOM*</h1><br/><h1>I AM A STEAKOSAURUS</h1>\n""</body></html>\n");
 }
 
 int slot_est_libre(Slot *o)
@@ -329,7 +344,7 @@ int faire_scrutation(Serveur *s)
     if (k < 0) {
         return -1;
     }
-    
+
     if(FD_ISSET(s->soc_ec, &set_read)) {
         accepter_connexion(s);
     }
@@ -337,7 +352,7 @@ int faire_scrutation(Serveur *s)
     for (i = 0; i < SLOTS_NB; i++) {
         traiter_slot_si_eligible(&s->slots[i], &set_read, &set_write);
     }
-    
+
     return 1;
 }
 
@@ -360,10 +375,10 @@ int main(int argc, const char *argv[])
     demarrer_serveur(&s, port);
     bor_signal(SIGPIPE, SIG_IGN, SA_RESTART);
     bor_signal(SIGINT, capter_fin, 0);
-    
+
     while(boucle)
         faire_scrutation(&s);
-    
+
     fermer_serveur(&s);
     return 0;
 }
