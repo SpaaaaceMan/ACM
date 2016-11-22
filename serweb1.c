@@ -131,10 +131,22 @@ void analyser_requete(Slot *o, Infos_entete *ie)
 
 void preparer_reponse(Slot *o, Infos_entete *ie)
 {
-    (void) ie;
-    sprintf(o->rep, "HTTP/1.1 404 Not Found\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
-            "\n""<html><head>\n""<title>Not Found</titles>\n""</head><body>\n""<h1>File not found</h1>\n"
-            "</body></html>\n");
+    if (ie->code_rep == C_NOT_FOUND)
+		sprintf(o->rep, "HTTP/1.1 404 Not Found\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
+				"\n""<html><head>\n""<title>Not Found</titles>\n""</head><body>\n""<h1>File not found</h1>\n"
+				"</body></html>\n");
+	else if (ie->code_rep == C_BAD_REQUEST)
+		sprintf(o->rep, "HTTP/1.1 400 Bad Request\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
+				"\n""<html><head>\n""<title>Bad Request</titles>\n""</head><body>\n""<h1>Bad Request</h1>\n"
+				"</body></html>\n");
+	else if (ie->code_rep == C_METHOD_UNKNOWN)
+		sprintf(o->rep, "HTTP/1.1 501 Method Unknown\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
+				"\n""<html><head>\n""<title>Method Unknown</titles>\n""</head><body>\n""<h1>Method Unknown</h1>\n"
+				"</body></html>\n");
+	else if (ie->code_rep == C_OK)
+		sprintf(o->rep, "HTTP/1.1 200 OK\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
+				"\n""<html><head>\n""<title>Welcome</titles>\n""</head><body>\n""<h1>IT WORKS</h1><br/><h3>My time machine works \o/</h3><br/><h1>*BOOM*</h1><br/><h1>I AM A STEAKOSAURUS</h1>\n"
+				"</body></html>\n"
 
 }
 
