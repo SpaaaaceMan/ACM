@@ -59,7 +59,7 @@ int chercher_fin_entete(Slot *o, int debut)
 {
     int i = debut;
     int res = -1;
-    for (; o->req[i] == '\0'; ++i) {
+    for (; o->req[i] != '\0'; ++i) {
         if ((o->req[i] == '\n' && o->req[i+1] == '\n') ||
                 (o->req[i] == '\r' && o->req[i+1] == '\n' && o->req[i+2] == '\r' && o->req[i+3] == '\n')) {
             res = i;
@@ -131,26 +131,34 @@ void analyser_requete(Slot *o, Infos_entete *ie)
     for (i = 0; o->req[i] != ' '; i++) {
         ie->methode[i] = o->req[i];
     }
+    
     int j = i;
     for (; o->req[i] != ' '; i++) {
         ie->url[i - j] = o->req[i];
     }
-    int k = 0;
-    for (; ie->url[k] != '?'; k++) {
-        ie->chemin[k] = o->req[k];
-    }
+    
+    sscanf(ie->url,"%[^?]",ie->chemin);
+    
     j = i;
     for (; o->req[i] != ' '; i++) {
         ie->version[i - j] = o->req[i];
     }
+   
     ie->id_meth = get_id_methode(ie->methode);
+    
+    if (ie->methode[0] == '\0' || ie->url[0] == '\0' || ie->chemin[0] == '\0' || ie->version[0] == '\0')
+		ie->code_rep = C_BAD_REQUEST;
+	else if (ie->id_meth == M_GET || ie->id_meth == M_TRACE)
+		ie->code_rep = C_OK;
+	else
+		ie->code_rep = C_METHOD_UNKNOWN;
 }
 
 void preparer_reponse(Slot *o, Infos_entete *ie)
 {
     if (ie->code_rep == C_NOT_FOUND)
         sprintf(o->rep, "HTTP/1.1 404 Not Found\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
-                "\n""<html><head>\n""<title>Not Found</titles>\n""</head><body>\n""<h1>File not found</h1>\n"
+                "\n""<!DOCTYPE html><html><head>\n""<title>Not Found</title>\n""</head><body>\n""<h1>File not found</h1>\n"
                 "</body></html>\n");
     else if (ie->code_rep == C_BAD_REQUEST)
         sprintf(o->rep, "HTTP/1.1 400 Bad Request\n""server : serweb1\n""connection : close\n""content-type : text\\html\n"
@@ -265,7 +273,7 @@ int proceder_lecture_requete(Slot *o)
         printf("Serveur[%d] : requete incomplete\n", o->soc);
         return 1;
     }
-    printf("Serveur[%d] : recu requete\"%s\"\n", o->soc, o->req);
+    printf("Serveur[%d] : recu requete\n\"%s\"\n", o->soc, o->req);
     Infos_entete ie;
     analyser_requete(o, &ie);
     preparer_reponse(o, &ie);
@@ -295,12 +303,11 @@ void traiter_slot_si_eligible(Slot *o, fd_set *set_read, fd_set *set_write)
             res = proceder_lecture_requete(o);
         }
     }
-    else if (o->etat == E_ECRIRE_REQUETE) {
+    if (o->etat == E_ECRIRE_REQUETE) {
         if (FD_ISSET(o->soc, set_write)) {
             res = proceder_ecrire_reponse(o);
         }
     }
-
     if (res <= 0) {
         liberer_slot(o);
     }
