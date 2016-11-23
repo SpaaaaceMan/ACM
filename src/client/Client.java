@@ -79,7 +79,8 @@ public class Client {
 		frame.setSize(400, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JGraphAdapterDemo demo = new org.jgrapht.demo.JGraphAdapterDemo();
-		frame.getContentPane().add(new JButton("bouton"), BorderLayout.SOUTH);
+		//frame.getContentPane().add(new JButton("bouton"), BorderLayout.SOUTH);
+		demo.setVisible(true);
 		frame.setVisible(true);
 
 	}
