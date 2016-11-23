@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import GraphModel.Edge;
 import GraphModel.Graph;
 
-public abstract class AbstractAlgo implements IStrategyACM{
+public abstract class AbstractAlgo implements IStrategyACM {
 
 	protected Graph mainGraph;
 	protected Graph acm;
@@ -14,7 +14,6 @@ public abstract class AbstractAlgo implements IStrategyACM{
 
 	public void createACM() {
 		System.out.println("Arbre couvrant minimal obtenu à l'aide de l'algorithme de " + getNameAlgo());
-		edgesNotInACM = new ArrayList<Edge>();
 		edgesNotInACM = mainGraph.getEdges();
 		acm = new Graph(getMainGraph().getName() + "ACM(" + getNameAlgo() + ")", mainGraph.isWeighted());
 		finalWeight = 0;
