@@ -4,16 +4,30 @@ import graphModel.Edge;
 import graphModel.Graph;
 
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 
-public class StrategyPrim extends AbstractAlgo {
+public class StrategyPrimEvolved extends AbstractAlgo {
 
+	PriorityQueue<Edge> edgesNotInACMStack;
+	
 	public Graph findACM(Graph graph) {
 		setMainGraph(graph);
 		createACM();
+		
+		for (Edge e : edgesNotInACM)
+			if (isAGoodEdge(e))
+				edgesNotInACMStack.add(e);
+		
 		int nbVertices = mainGraph.getVertices().size();
-		while (acm.getVertices().size() < nbVertices) {
-			acm.addEdge(findMinimalEdge());
+		
+		while (acm.getVertices().size() < nbVertices){
+			acm.addEdge(edgesNotInACMStack.peek());
+			finalWeight += edgesNotInACMStack.poll().getValue();
+			edgesNotInACMStack.clear();
+			for (Edge e : edgesNotInACM)
+				if (isAGoodEdge(e))
+					edgesNotInACMStack.add(e);
 		}
 		System.out.println("weight = " + finalWeight);
 		return acm;
@@ -29,34 +43,15 @@ public class StrategyPrim extends AbstractAlgo {
 		return true;
 	}
 
-	public Edge findMinimalEdge() {
-		//liste des arêtes liées à au moins un sommet de l'ACM actuel mais pas 
-		//déjà dedans
-		ArrayList<Edge> edgesFound = new ArrayList<Edge>();
-
-		//pour chaque sommet de l'ACM
-		for (Edge e : edgesNotInACM) {
-			if (isAGoodEdge(e))
-				edgesFound.add(e);
-		}	
-		Edge res = null;
-		int min = getMin(edgesFound);
-		finalWeight += min;
-		for (Edge e : edgesFound) {
-			if (e.getValue() == min) {
-				res = e;
-				edgesNotInACM.remove(res);
-				return res;
-			}
-		}
-		return res;
-	}
-
 	public String getNameAlgo() {
-		return "Prim";
+		return "Prim Evolved";
 	}
 
 	public void initACM() {
 		acm.addVertice(mainGraph.getVertices().get(0));		
+		edgesNotInACMStack = new PriorityQueue<Edge>();
+		for (Edge e : edgesNotInACM)
+			if (isAGoodEdge(e))
+				edgesNotInACMStack.add(e);	
 	}
 }

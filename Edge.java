@@ -1,6 +1,6 @@
-package GraphModel;
+package graphModel;
 
-public class Edge {
+public class Edge implements Comparable<Edge>{
 
 	private String name;
 	private int value;
@@ -63,5 +63,10 @@ public class Edge {
 	public String toString() {
 		return "\nEdge " + name + ", value = " + value + ", vertice1 = "
 				+ vertice1 + ", vertice2 = " + vertice2;
+	}
+
+	@Override
+	public int compareTo(Edge o) {
+		return ((o.value == this.value) ? 0 : ((o.value < this.value) ? 1 : -1));
 	}
 }

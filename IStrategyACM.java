@@ -1,6 +1,6 @@
 package algorithms;
 
-import GraphModel.Graph;
+import graphModel.Graph;
 
 public interface IStrategyACM {
 

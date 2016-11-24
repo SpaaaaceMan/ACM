@@ -1,10 +1,11 @@
 package client;
 
+import graphModel.Graph;
+import graphModel.Vertice;
 import algorithms.IStrategyACM;
 import algorithms.StrategyKruskal;
 import algorithms.StrategyPrim;
-import GraphModel.Graph;
-import GraphModel.Vertice;
+import algorithms.StrategyPrimEvolved;
 
 public class Client {
 
@@ -48,10 +49,11 @@ public class Client {
 		g.addEdge(v7, v2, 2);
 		g.addEdge(v2, v5, 4);
 
-		//IStrategyACM strat = new StrategyPrim();
+	    //IStrategyACM strat = new StrategyPrim();
 		IStrategyACM strat = new StrategyKruskal();
+		//IStrategyACM strat = new StrategyPrimEvolved();
 		Graph acm = strat.findACM(g);
-		
+
 		System.out.println(g.toString());
 		System.out.println(acm.toString());
 	}

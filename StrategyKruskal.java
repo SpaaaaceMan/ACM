@@ -2,13 +2,13 @@ package algorithms;
 
 import java.util.ArrayList;
 
-import GraphModel.Edge;
-import GraphModel.Graph;
-import GraphModel.Vertice;
+import graphModel.Edge;
+import graphModel.Graph;
+import graphModel.Vertice;
 
 public class StrategyKruskal extends AbstractAlgo {
 	
-	private ArrayList<Graph> subGraphs = new ArrayList<>();
+	private ArrayList<Graph> subGraphs = new ArrayList<Graph>();
 	
 	public Graph findACM(Graph graph) {
 		setMainGraph(graph);
@@ -25,20 +25,22 @@ public class StrategyKruskal extends AbstractAlgo {
 			Graph subGraph1 = null;
 			Graph subGraph2 = null;
 			
-			//TO DO attention les sous graphes ne sont jamais affecté !!!
 			for (Graph g : subGraphs) {
 				for (Vertice v : g.getVertices()) {
 					//si le sous-graphe possède l'un des sommets de l'arête minimale courante
-					if (v.getEdges().contains(e)) {
-						if (subGraph1 == null) {
+					if (v == e.getVertice1() || v == e.getVertice2()) {
+						if (subGraph2 == null) {
 							subGraph2 = g;
 						}
-						else
+						else {
 							subGraph1 = g;
+						}
 						break;
 					}
 				}
 			}
+			System.out.println("sousgraphe1\n" + subGraph1);
+			System.out.println("sousgraphe2\n" + subGraph2);
 			if (!willCreateACycle(subGraph1, e)) {
 				//acm.addEdge(e);
 				mergeSubGraphs(subGraph1, subGraph2, e);
@@ -59,8 +61,11 @@ public class StrategyKruskal extends AbstractAlgo {
 	}
 	
 	private void mergeSubGraphs(Graph subGraph1, Graph subGraph2, Edge e) {
-		for (Vertice v : subGraph2.getVertices()) {
-			//subGraph1.addVertice(v);
+		for (Vertice vertice : subGraph2.getVertices()) {
+			subGraph1.addVertice(vertice);
+		}
+		for (Edge edge : subGraph2.getEdges()) {
+			subGraph1.addEdge(edge);
 		}
 		subGraph1.addEdge(e);
 		subGraphs.remove(subGraph2);
@@ -72,6 +77,9 @@ public class StrategyKruskal extends AbstractAlgo {
 	 * @return TRUE if an edge induces the creation of a cycle, FALSE otherwise
 	 */
 	public boolean willCreateACycle(Graph g, Edge e) {
+		if (g == null) {
+			return true;
+		}
 		if (!g.getVertices().contains(e.getVertice1()) || !g.getVertices().contains(e.getVertice2())) {
 			return false;
 		}
