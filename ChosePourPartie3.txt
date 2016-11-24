@@ -43,7 +43,7 @@ for (int j = 0; j < 100; ++j)
 for (int i = 0; i < PointsValide.size(); ++i)
 	for (int j = 0; j < PointsValide.size(); ++j)
 		if (Sqrt((PointsValide.get(i).getX() - PointsValide.get(j).getX())² + (PointsValide.get(i).getY() - PointsValide.get(j).getY())²) <= 30){
-			PointsValide.remove(j); --j; --i;
+			PointsValide.remove(j); --i;
 		}
 
 ArrayList<integer> RandValue = new ArrayList<>(10);
