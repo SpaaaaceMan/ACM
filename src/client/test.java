@@ -17,18 +17,25 @@ package client;
  * (b) the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation.
  */
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.geom.Rectangle2D;
+import java.util.Random;
 
-import javax.swing.*;
+import javax.swing.JApplet;
 
-import org.jgraph.*;
-import org.jgraph.graph.*;
-import org.jgrapht.*;
-import org.jgrapht.ext.*;
-import org.jgrapht.graph.*;
-// resolve ambiguity
+import org.jgraph.JGraph;
+import org.jgraph.graph.AttributeMap;
+import org.jgraph.graph.DefaultGraphCell;
+import org.jgraph.graph.GraphConstants;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultListenableGraph;
+import org.jgrapht.graph.DirectedMultigraph;
+import org.jgrapht.graph.ListenableUndirectedWeightedGraph;
+
+import GraphModel.Graph;
 
 /**
  * A demo applet that shows how to use JGraph to visualize JGraphT graphs.
@@ -36,46 +43,27 @@ import org.jgrapht.graph.DefaultEdge;
  * @author Barak Naveh
  * @since Aug 3, 2003
  */
-public class test
-    extends JApplet
+public class test extends JApplet
 {
     private static final long serialVersionUID = 3256444702936019250L;
     private static final Color DEFAULT_BG_COLOR = Color.decode("#FAFBFF");
     private static final Dimension DEFAULT_SIZE = new Dimension(530, 320);
+    
+    public test(Graph graph) {
+    	convertMyGraph(graph);
 
-    //
-    private JGraphModelAdapter<String, DefaultEdge> jgAdapter;
-
-    /**
-     * An alternative starting point for this demo, to also allow running this applet as an
-     * application.
-     *
-     * @param args ignored.
-     */
-    public static void main(String[] args)
-    {
-        test applet = new test();
-        applet.init();
-
-        JFrame frame = new JFrame();
-        frame.getContentPane().add(applet);
-        frame.setTitle("JGraphT Adapter to JGraph Demo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        MyFrame frame = new MyFrame();
+        frame.getContentPane().add(this);
         frame.pack();
-        frame.setVisible(true);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void init()
-    {
-        // create a JGraphT graph
-        ListenableGraph<String, DefaultEdge> g =
-            new ListenableDirectedMultigraph<>(DefaultEdge.class);
+    
+    public JGraph convertMyGraph(Graph myGraph) {
+    	// create a JGraphT graph
+    	ListenableUndirectedWeightedGraph<String, DefaultEdge> g =
+            new ListenableUndirectedWeightedGraph<String, DefaultEdge>(DefaultEdge.class);
 
         // create a visualization using JGraph, via an adapter
-        jgAdapter = new JGraphModelAdapter<>(g);
+        jgAdapter = new JGraphModelAdapter<String, DefaultEdge>(g);
 
         JGraph jgraph = new JGraph(jgAdapter);
 
@@ -83,17 +71,27 @@ public class test
         getContentPane().add(jgraph);
         resize(DEFAULT_SIZE);
 
-        String v1 = "v1";
-        String v2 = "v2";
-        String v3 = "v3";
-        String v4 = "v4";
+        String v1 = myGraph.getVertices().get(0).getName();
+        String v2 = myGraph.getVertices().get(1).getName();
+        String v3 = myGraph.getVertices().get(2).getName();
+        String v4 = myGraph.getVertices().get(3).getName();
+        String v5 = myGraph.getVertices().get(4).getName();
+        String v6 = myGraph.getVertices().get(5).getName();
+        String v7 = myGraph.getVertices().get(6).getName();
+        String v8 = myGraph.getVertices().get(7).getName();
+        String v9 = myGraph.getVertices().get(8).getName();
 
         // add some sample data (graph manipulated via JGraphT)
         g.addVertex(v1);
         g.addVertex(v2);
         g.addVertex(v3);
         g.addVertex(v4);
-
+        g.addVertex(v5);
+        g.addVertex(v6);
+        g.addVertex(v7);
+        g.addVertex(v8);
+        g.addVertex(v9);
+                
         g.addEdge(v1, v2);
         g.addEdge(v2, v3);
         g.addEdge(v3, v1);
@@ -105,8 +103,14 @@ public class test
         positionVertexAt(v3, 310, 230);
         positionVertexAt(v4, 380, 70);
 
-        // that's all there is to it!...
+        return jgraph;
     }
+    
+    private void findVertexLocation(Object vertex) {
+        //positionVertexAt(vertex, Random % this.WIDTH), rand() % this.HEIGHT);
+    }
+
+    private JGraphModelAdapter<String, DefaultEdge> jgAdapter;
 
     private void adjustDisplaySettings(JGraph jg)
     {
@@ -147,15 +151,14 @@ public class test
     /**
      * a listenable directed multigraph that allows loops and parallel edges.
      */
-    private static class ListenableDirectedMultigraph<V, E>
-        extends DefaultListenableGraph<V, E>
+    private static class ListenableDirectedMultigraph<V, E> extends DefaultListenableGraph<V, E>
         implements DirectedGraph<V, E>
     {
         private static final long serialVersionUID = 1L;
 
         ListenableDirectedMultigraph(Class<E> edgeClass)
         {
-            super(((Graph<V, E>) new DirectedMultigraph<>(edgeClass)));
+            super(((DirectedGraph<V, E>) new DirectedMultigraph<Object, E>(edgeClass)));
         }
     }
 }

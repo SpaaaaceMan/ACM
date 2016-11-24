@@ -25,7 +25,6 @@ public class StrategyKruskal extends AbstractAlgo {
 			Graph subGraph1 = null;
 			Graph subGraph2 = null;
 			
-			//TO DO attention les sous graphes ne sont jamais affecté !!!
 			for (Graph g : subGraphs) {
 				for (Vertice v : g.getVertices()) {
 					//si le sous-graphe possède l'un des sommets de l'arête minimale courante

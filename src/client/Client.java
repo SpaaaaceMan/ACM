@@ -1,29 +1,9 @@
 package client;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JApplet;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import org.jgraph.JGraph;
-import org.jgraph.graph.DefaultEdge;
-import org.jgrapht.EdgeFactory;
-import org.jgrapht.ListenableGraph;
-import org.jgrapht.demo.JGraphAdapterDemo;
-import org.jgrapht.ext.JGraphModelAdapter;
-import org.jgrapht.graph.AbstractGraph;
-import org.jgrapht.graph.ClassBasedEdgeFactory;
-import org.jgrapht.graph.ListenableDirectedGraph;
-import org.jgrapht.graph.SimpleGraph;
-
-import GraphModel.Edge;
 import GraphModel.Graph;
 import GraphModel.Vertice;
 import algorithms.IStrategyACM;
 import algorithms.StrategyKruskal;
-import algorithms.StrategyPrim;
 
 public class Client {
 
@@ -67,21 +47,14 @@ public class Client {
 		g.addEdge(v7, v2, 2);
 		g.addEdge(v2, v5, 4);
 
-		IStrategyACM strat = new StrategyPrim();
+		//IStrategyACM strat = new StrategyPrim();
 		//IStrategyACM strat = new StrategyKruskal();
 		//Graph acm = strat.findACM(g);
 
 		//System.out.println(g.toString());
 		//System.out.println(acm.toString());
 
-		JFrame frame = new JFrame("mon graphe");
-		frame.setLayout(new BorderLayout());
-		frame.setSize(400, 400);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		JGraphAdapterDemo demo = new org.jgrapht.demo.JGraphAdapterDemo();
-		//frame.getContentPane().add(new JButton("bouton"), BorderLayout.SOUTH);
-		demo.setVisible(true);
-		frame.setVisible(true);
+		test gui = new test(g);
 
 	}
 }
