@@ -36,10 +36,15 @@ for (int i = 0; i < 100; ++i){
 ArrayList <Point> PointsValide = new ArrayList<>();
 PointsValide.add(Points[0]);
 
+for (int j = 0; j < 100; ++j)
+	if (Sqrt((PointsValide.get(i).getX() - Points[j].getX())² + (PointsValide.get(i).getY() - Points[j].getY())²) >= 30)
+		PointsValide.add(Points[j]);
+
 for (int i = 0; i < PointsValide.size(); ++i)
-	for (int j = 0; j < 100; ++j)
-		if (Sqrt((PointsValide.get(i).getX() - Points[j].getX())² + (PointsValide.get(i).getY() - Points[j].getY())²) >= 30)
-			PointsValide.add(Points[j]);
+	for (int j = 0; j < PointsValide.size(); ++j)
+		if (Sqrt((PointsValide.get(i).getX() - PointsValide.get(j).getX())² + (PointsValide.get(i).getY() - PointsValide.get(j).getY())²) <= 30){
+			PointsValide.remove(j); --j; --i;
+		}
 
 ArrayList<integer> RandValue = new ArrayList<>(10);
 
