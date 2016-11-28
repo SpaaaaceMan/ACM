@@ -1,9 +1,12 @@
 package client;
 
+import java.util.Random;
+
 import GraphModel.Graph;
 import GraphModel.Vertice;
 import algorithms.IStrategyACM;
 import algorithms.StrategyKruskal;
+import algorithms.StrategyPrim;
 
 public class Client {
 
@@ -11,6 +14,7 @@ public class Client {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		/*====Exemple de test====
 		Graph g = new Graph("mon graph", true);
 
 		Vertice v1 = new Vertice("S1");
@@ -47,14 +51,13 @@ public class Client {
 		g.addEdge(v7, v2, 2);
 		g.addEdge(v2, v5, 4);
 
-		//IStrategyACM strat = new StrategyPrim();
-		//IStrategyACM strat = new StrategyKruskal();
-		//Graph acm = strat.findACM(g);
-
 		//System.out.println(g.toString());
-		//System.out.println(acm.toString());
-
-		test gui = new test(g);
-
+		IStrategyACM strat = new StrategyPrim();
+		Graph acm = strat.findACM(g);
+		System.out.println(acm.toString());
+		System.out.println(acm.computeUltrametric(v1, v5));*/
+		
+		test gui = new test(5);
+		
 	}
 }
