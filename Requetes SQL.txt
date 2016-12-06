@@ -1,0 +1,74 @@
+5)  SELECT Smartphone.*, Fonctionnalite.nomFonctionnalite, Forfait.nomForfait
+	FROM Smartphone, Fonctionnalite, SmartphoneFonct, Forfait, ForfaitDisponible
+	WHERE Smartphone.numCodeBarre = SmartphoneFonct.numCodeBarre AND
+		  SmartphoneFonct.numFonc = Fonctionnalite.numFonc AND
+		  SmartphoneFonct.numCodeBarre = ForfaitDisponible.numCodeBarre AND
+		  ForfaitDisponible.numForfait = Forfait.numForfait;
+
+6) Ce sont deux requêtes séparées : la première pour les téléphones, et la deuxième pour les abonnements.
+
+    SELECT Client.numCli, Smartphone.*
+	FROM Client, WishList, wishTel, Smartphone
+	WHERE Client.numCli = WishList.numCli AND
+		  WishList.numWish = wishTel.numWish AND
+		  wishTel.numCodeBarre = Smartphone.numCodeBarre;
+
+    SELECT Client.numCli, Forfait.*
+    FROM Client, WishList, Forfait, AbonnementWish
+    WHERE Client.numCli = WishList.numCli AND
+        WishList.numWish = AbonnementWish.numWish AND
+	    AbonnementWish.numForfait = Forfait.numForfait;
+
+7)  SELECT *
+	FROM Smartphone
+	WHERE Smartphone.numCodeBarre != ALL
+		  (SELECT numCodeBarre
+		   FROM achatTel);
+
+8)  SELECT Client.numCli, COUNT(numPanier)
+	FROM Client, Panier
+	WHERE Client.numCli = Panier.numCli
+	GROUP BY Client.numCli;
+
+9)  SELECT Client.numCli, SUM(Montant)
+	FROM Client, Panier, Paiement
+	WHERE Client.numCli = Panier.numCli AND
+		  Panier.numPanier = Paiement.numPanier
+	GROUP BY Client.numCli;
+
+Les suivante ne sont pas fonctionnelles
+10)
+
+SELECT  Facture.numFacture, Panier.dateCommande, Client.nomCli,
+		Client.adresseClient, Smartphone.numCodeBarre, Smartphone.nomSmartphone,
+		achatTel.quantitee,
+		Forfait.nomForfait, Livraison.fraisLivraison, Paiement.montant,
+		((Paiement.montant + Livraison.fraisLivraison) + ((Paiement.montant + Livraison.fraisLivraison)/4)) TotalTTC
+FROM 	Facture, Paiement, Panier, Client, achatTel, Smartphone, Abonnement, Forfait,
+		Livraison
+WHERE
+		Facture.numFacture = Paiement.numFacture
+	AND Paiement.numPanier = Panier.numPanier
+	AND Panier.numCli = Client.numCli
+	AND Panier.numPanier = achatTel.numPanier
+	AND achatTel.numCodeBarre = Smartphone.numCodeBarre
+	AND Panier.numPanier = Abonnement.numPanier
+	AND Abonnement.numForfait = Forfait.numForfait
+	AND Facture.numLiv = Livraison.numLiv
+
+11)
+
+SELECT Client.numCli
+FROM Client,
+	(SELECT MAX(somme) maxSomme
+	 FROM (	SELECT SUM(prixPanier) AS somme
+ 	 		FROM Client, Panier
+ 	 		WHERE Client.numCli = Panier.numCli
+ 	 		GROUP BY Client.numCli) Curseur) maxCommande,
+	(SELECT Client.numCli, SUM(prixPanier) AS somme
+	 FROM Client, Panier
+	 WHERE Client.numCli = Panier.numCli
+	 GROUP BY Client.numCli) sommeCommande
+WHERE
+		Client.numCli = sommeCommande.numCli
+	AND sommeCommande.somme = maxCommande.maxSomme
